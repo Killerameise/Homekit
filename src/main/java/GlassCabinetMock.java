@@ -7,62 +7,68 @@ import com.beowulfe.hap.accessories.Lightbulb;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MockLightbulb implements Lightbulb {
+//Vitrine
+public class GlassCabinetMock extends GlassCabinet {
+    private        boolean on       = false;
+    private static int     ON_CODE  = 1397077;
+    private static int     OFF_CODE = 1397076;
 
-    private boolean powerState = false;
     private HomekitCharacteristicChangeCallback subscribeCallback = null;
 
+    public GlassCabinetMock() {
+        super();
+    }
 
     @Override
     public int getId() {
-        return 2;
+        return 33;
     }
 
     @Override
     public String getLabel() {
-        return "Test Lightbulb";
+        return "Vitrine";
     }
 
     @Override
     public void identify() {
-        System.out.println("Identifying light");
+        System.out.println("Identifying glass cabinet");
     }
 
     @Override
     public String getSerialNumber() {
-        return "none";
+        return "0000-0004";
     }
 
     @Override
     public String getModel() {
-        return "none";
+        return "Version 0.1";
     }
 
     @Override
     public String getManufacturer() {
-        return "none";
+        return "Jaspar Mang";
     }
+
 
     @Override
     public CompletableFuture<Boolean> getLightbulbPowerState() {
-        return CompletableFuture.completedFuture(powerState);
+        return CompletableFuture.completedFuture(on);
     }
 
     @Override
-    public CompletableFuture<Void> setLightbulbPowerState(boolean powerState)
-            throws Exception {
-        this.powerState = powerState;
+    public CompletableFuture<Void> setLightbulbPowerState(boolean b) throws Exception {
+        System.out.println("Vitrine light on is " + b);
+        on = b;
         if (subscribeCallback != null) {
             subscribeCallback.changed();
         }
-        System.out.println("The lightbulb is now " + (powerState ? "on" : "off"));
+
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public void subscribeLightbulbPowerState(
-            HomekitCharacteristicChangeCallback callback) {
-        this.subscribeCallback = callback;
+    public void subscribeLightbulbPowerState(HomekitCharacteristicChangeCallback homekitCharacteristicChangeCallback) {
+        this.subscribeCallback = homekitCharacteristicChangeCallback;
     }
 
     @Override
@@ -70,4 +76,7 @@ public class MockLightbulb implements Lightbulb {
         this.subscribeCallback = null;
     }
 
+    public boolean isOn() {
+        return on;
+    }
 }
